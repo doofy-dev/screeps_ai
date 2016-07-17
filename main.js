@@ -60,19 +60,7 @@ module.exports.loop = function () {
             }
         }
     }
-    //
-    // if(Memory.reload){
-    //     for(let j in Game.rooms.sim.sources){
-    //         console.log(j)
-    //         Game.rooms.sim.sources[j].allocated = 0;
-    //     }
-    //     for(let c in Memory.creeps) {
-    //         let creep = Game.creeps[c];
-    //         if(typeof Game.rooms.sim.sources[creep.memory.destination] != "undefined")
-    //             Game.rooms.sim.sources[creep.memory.destination].allocated++;
-    //     }
-    // }
-    // Memory.reload = false;
+
     Memory.killAll = false;
 
 };
