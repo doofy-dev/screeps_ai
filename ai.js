@@ -58,8 +58,10 @@ AI.prototype.collect = function () {
 };
 AI.prototype.run = function () {
     let creep = this.creep;
-
-
+    if(creep.ticksToLive < 30) {
+        creep.memory.working = true;
+        this.setDestination(null);
+    }
     if (creep.carry.energy == 0 && creep.memory.working && this.memory.needCollect) {
             this.setDestination(null);
             creep.memory.working = false;
