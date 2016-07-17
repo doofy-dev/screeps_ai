@@ -60,7 +60,6 @@ module.exports.loop = function () {
             }
         }
     }
-
     Memory.killAll = false;
 
 };
