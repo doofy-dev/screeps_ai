@@ -62,14 +62,6 @@ AI.prototype.moveTo = function (destination, reload = false) {
 };
 
 AI.prototype.canMove = function (pos, direction, room) {
-    // const TOP = 1;
-    // const TOP_RIGHT = 2;
-    // const RIGHT = 3;
-    // const BOTTOM_RIGHT = 4;
-    // const BOTTOM = 5;
-    // const BOTTOM_LEFT = 6;
-    // const LEFT = 7;
-    // const TOP_LEFT = 8;
     let creeps = pos.findInRange(pos, 1, FIND_MY_CREEPS);
     let dirs = {
         1: {x: 0, y: 1},
