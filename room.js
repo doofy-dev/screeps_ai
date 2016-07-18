@@ -4,7 +4,6 @@
 
 module.exports = function (room) {
     var spawner = require("spawn");
-    // console.log(room,JSON.stringify( Memory.rooms[room]));
     var roomObject = Game.rooms[room];
     if (typeof roomObject.memory.tasks == "undefined")
         roomObject.memory.tasks = {
@@ -98,12 +97,21 @@ module.exports = function (room) {
                 roomObject.memory.tasks.buildTask = null;
         }
         if (roomObject.memory.tasks.buildTask == null) {
+            var sites = [];
             var constructionSites = roomObject.find(FIND_MY_CONSTRUCTION_SITES);
             for (let cs in constructionSites) {
                 let constructionSite = constructionSites[cs];
                 if (constructionSite != null && constructionSite.progress < constructionSite.progressTotal)
-                    roomObject.memory.tasks.buildTask = constructionSite.id;
+                    sites.push(constructionSite);
             }
+            for(let i= 0; i<sites.length;i++){
+                let pos = sites[i].pos;
+                if(Game.map.getTerrainAt(pos.x, pos.y, room)=="swamp"){
+                    roomObject.memory.tasks.buildTask = sites[i].id;
+                }
+            }if(roomObject.memory.tasks.buildTask==null && sites.length>0)
+                roomObject.memory.tasks.buildTask = sites[0].id;
+            // roomObject.memory.tasks.buildTask = constructionSite.id;
         }
     }
 
