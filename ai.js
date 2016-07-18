@@ -54,6 +54,7 @@ AI.prototype.moveTo=function (destination,reload=false) {
         if(this.creep.move(nextMove.direction)==OK)
           path.index++;
     }
+    
     this.setCreepMemory('path',path);
 };
 
