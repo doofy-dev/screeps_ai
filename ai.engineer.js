@@ -14,13 +14,13 @@ Engineer.prototype.doJob = function(){
     if(repair!=null){
         this.setCreepMemory("canDo", true);
         if (this.creep.build(repair) == ERR_NOT_IN_RANGE)
-            this.creep.moveTo(repair)
+            this.moveTo(repair)
     }
     else {
         if (constructionSite != null) {
             this.setCreepMemory("canDo", true);
             if (this.creep.build(constructionSite) == ERR_NOT_IN_RANGE)
-                this.creep.moveTo(constructionSite)
+                this.moveTo(constructionSite)
         } else
             this.setCreepMemory("canDo", false);
     }

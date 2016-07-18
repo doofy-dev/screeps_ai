@@ -17,7 +17,7 @@ Ranged.prototype.doJob = function(){
         if(hostile!=target)
             target = hostile;
         if (this.creep.rangedAttack(target) == ERR_NOT_IN_RANGE)
-            this.creep.moveTo(target)
+            this.moveTo(target)
     }else
         this.setCreepMemory("canDo", false);
 };

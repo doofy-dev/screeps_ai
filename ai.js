@@ -8,7 +8,7 @@ function AI(creep) {
         mainJob: null,
         currentJob: null,
         destination: null,
-        path: null,
+        path: {id:null, path:null,index:0},
         needCollect: true,
         canDo:true
     };
@@ -34,6 +34,63 @@ AI.prototype.setDestination = function (dest) {
         this.creep.room.memory.sources[this.memory.destination].allocated--;
     this.setCreepMemory("destination",dest);
 };
+AI.prototype.moveTo=function (destination,reload=false) {
+    var path = {};
+    Object.assign(path, this.memory.path);
+    let cPos = this.getRoomPos(this.creep,this.creep.room.name);
+    let dPos = this.getRoomPos(destination,this.creep.room.name);
+    if(path.id != destination.id || path.path==null){
+        path.id=destination.id;
+        path.path = cPos.findPathTo(dPos);
+        path.index = 0;
+    }
+    let nextMove=path.path[path.index];
+    if(path.path==null || path.index==path.path.length || !this.canMove(cPos,nextMove.direction,this.creep.room) || (cPos.x == dPos.x && cPos.y == dPos.y)){
+        console.log("cannot move");
+        this.setCreepMemory('path',{id:null, path:null,index:0});
+        if(reload)
+            this.moveTo(destination,true);
+        return false;
+    }
+    this.creep.move(nextMove.direction);
+    path.index++;
+    this.setCreepMemory('path',path);
+};
+
+AI.prototype.canMove=function (pos, direction, room) {
+    // const TOP = 1;
+    // const TOP_RIGHT = 2;
+    // const RIGHT = 3;
+    // const BOTTOM_RIGHT = 4;
+    // const BOTTOM = 5;
+    // const BOTTOM_LEFT = 6;
+    // const LEFT = 7;
+    // const TOP_LEFT = 8;
+    let creeps = pos.findInRange(pos,1,FIND_MY_CREEPS);
+    let dirs = {
+        1:{x:0,y:1},
+        2:{x:1,y:1},
+        3:{x:1,y:0},
+        4:{x:1,y:-1},
+        5:{x:0,y:-1},
+        6:{x:-1,y:-1},
+        7:{x:-1,y:0},
+        8:{x:-1,y:1}
+    };
+    let x = pos.x + dirs[direction].x;
+    let y = pos.y + dirs[direction].y;
+    for(var c in creeps){
+        let creep = creeps[c];
+        console.log('has? ',x,y);
+        if(creep.pos.x == x && creep.pos.y == y)
+            return false;
+    }
+    return true;
+};
+
+AI.prototype.getRoomPos = function (object,roomName) {
+  return Game.rooms[roomName].getPositionAt(object.pos.x,object.pos.y);
+};
 AI.prototype.collect = function () {
     if(this.memory.destination == null){
         var sources = this.creep.room.find(FIND_SOURCES);
@@ -49,8 +106,7 @@ AI.prototype.collect = function () {
     if(this.memory.destination!=null){
         let dst=Game.getObjectById(this.memory.destination);
         if (this.creep.harvest(dst) == ERR_NOT_IN_RANGE) {
-            this.creep.moveTo(dst);
-            // this.creep.moveByPath(this.memory.path);
+            this.moveTo(dst);
         }
     // if (this.creep.harvest(this.memory.destination) == ERR_NOT_IN_RANGE) {
     //     this.creep.moveTo(source);
@@ -58,16 +114,17 @@ AI.prototype.collect = function () {
 };
 AI.prototype.run = function () {
     let creep = this.creep;
-    if(creep.ticksToLive < 30) {
+    let minimumTTL = 30;
+    if(creep.ticksToLive < minimumTTL) {
         creep.memory.working = true;
         this.setDestination(null);
     }
-    if (creep.carry.energy == 0 && creep.memory.working && this.memory.needCollect) {
+    if (creep.carry.energy == 0 && creep.memory.working && this.memory.needCollect && creep.ticksToLive>=minimumTTL) {
             this.setDestination(null);
             creep.memory.working = false;
 
     } else {
-        if (!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
+        if (!creep.memory.working && (creep.carry.energy == creep.carryCapacity || creep.ticksToLive<minimumTTL)) {
             this.setDestination(null);
             creep.memory.working = true;
         }

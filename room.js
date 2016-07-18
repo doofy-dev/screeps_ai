@@ -73,7 +73,7 @@ module.exports = function (room) {
     attackTower();
     for (let c in roomObject.memory.states.creeps) {
         roomObject.memory.states.creeps[c].count = _.filter(Game.creeps, function (creep) {
-            return creep.memory.mainJob == c && creep.ticksToLive > 12;
+            return creep.memory.mainJob == c && creep.ticksToLive > 30;
         }).length
     }
     // console.log(JSON.stringify( Memory.rooms[room].states));

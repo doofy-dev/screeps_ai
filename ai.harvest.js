@@ -32,7 +32,7 @@ Harvest.prototype.doJob = function () {
     }
     this.setCreepMemory("canDo", true);
     if (this.creep.transfer(Game.getObjectById(this.memory.destination), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-        this.creep.moveTo(Game.getObjectById(this.memory.destination));
+        this.moveTo(Game.getObjectById(this.memory.destination));
 };
 
 Harvest.prototype.findStructure = function (structure) {

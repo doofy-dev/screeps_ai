@@ -20,7 +20,7 @@ Melee.prototype.doJob = function(){
             console.log("hostile")
         }
         if (this.creep.attack(target) == ERR_NOT_IN_RANGE)
-            this.creep.moveTo(target)
+            this.moveTo(target)
     }else
         this.setCreepMemory("canDo", false);
 };
