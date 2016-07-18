@@ -46,14 +46,14 @@ AI.prototype.moveTo=function (destination,reload=false) {
     }
     let nextMove=path.path[path.index];
     if(path.path==null || path.index==path.path.length || !this.canMove(cPos,nextMove.direction,this.creep.room) || (cPos.x == dPos.x && cPos.y == dPos.y)){
-        console.log("cannot move");
         this.setCreepMemory('path',{id:null, path:null,index:0});
         if(reload)
             this.moveTo(destination,true);
         return false;
+    }else{
+        if(this.creep.move(nextMove.direction)==OK)
+          path.index++;
     }
-    this.creep.move(nextMove.direction);
-    path.index++;
     this.setCreepMemory('path',path);
 };
 
