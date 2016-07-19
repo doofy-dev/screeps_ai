@@ -62,12 +62,18 @@ module.exports = function (spawner) {
         //Trying to use the rest of the energy
         do{
             has=false;
+            let add = null;
             for(let i=0; i<parts.length;i++) {
                 if (requiredEnergy + bodyPartCost[parts[i]] <= energy) {
                     r.push(parts[i]);
-                    requiredEnergy +=bodyPartCost[parts[i]];
-                    has = true;
+                    if(add==null || bodyPartCost[add]<bodyPartCost[parts[i]]){
+                        add = parts[i];
+                    }
                 }
+            }
+            if(add!=null){
+                has = true;
+                requiredEnergy +=bodyPartCost[add];
             }
         }while (has);
         //returning the parts
