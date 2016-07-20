@@ -41,6 +41,7 @@ module.exports = function (spawner) {
             var fromParts = Memory.jobs[job].parts;
             //Getting the best parts
             var parts = getBestParts(roomEnergy, fromParts);
+            console.log(JSON.stringify(parts),roomEnergy,energyRequired(parts))
             //Creating creep
             var name = spawner.createCreep(parts, undefined, {mainJob: job});
             if (!(name < 0) && typeof name != 'undefined')
@@ -53,12 +54,14 @@ module.exports = function (spawner) {
         var r = [];
         var requiredEnergy = energyRequired(parts);
         var number = Math.floor(energy / requiredEnergy);
+        console.log(requiredEnergy,energy,number)
         //pushing parts
         for (let i = 0; i < parts.length; i++)
             for (let j = 0; j < number; j++)
                 r.push(parts[i])
         requiredEnergy = energyRequired(r);
         let has = false;
+        console.log(requiredEnergy)
         //Trying to use the rest of the energy
         do{
             has=false;
@@ -66,7 +69,7 @@ module.exports = function (spawner) {
             for(let i=0; i<parts.length;i++) {
                 if (requiredEnergy + bodyPartCost[parts[i]] <= energy) {
                     r.push(parts[i]);
-                    if(add==null || bodyPartCost[add]<bodyPartCost[parts[i]]){
+                    if(bodyPartCost[add]<bodyPartCost[parts[i]]){
                         add = parts[i];
                     }
                 }
