@@ -23,6 +23,7 @@ global.tasks = {
     upgrade: require("task.upgrade")
 };
 module.exports.loop = function () {
+
     //console.log("-----------------------ROOMS-----------------------");
     //Looping trough rooms
     for (let r in Game.rooms) {
