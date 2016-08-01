@@ -24,6 +24,7 @@ global.tasks = {
 };
 module.exports.loop = function () {
 
+
    //console.log("-----------------------ROOMS-----------------------");
     //Looping trough rooms
     for (let r in Game.rooms) {
