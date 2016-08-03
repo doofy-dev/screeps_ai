@@ -1,77 +1,45 @@
-//Loading main AI
-var ai = require("ai");
-//Loading Room code
+global.presets = require("presets");
 var room = require("room");
-//Loading jobs
-var jobs={
-    melee: require('ai.melee'),
-    ranged: require('ai.ranged'),
-    harvest: require('ai.harvest'),
-    engineer: require('ai.engineer'),
-    medic: require('ai.medic'),
-    research: require('ai.research')
+
+global.jobs = {
+    ai:require("ai"),
+    melee: null,
+    ranged: null,
+    engineer: null,
+    medic: null,
+    harvest:null,
+    research: null,
+    merchant: null,
+    scout: null
 };
-
-//Tick entry point
+global.tasks = {
+    collect: require("task.collect"),
+    build: require("task.build"),
+    harvest: require("task.harvest"),
+    repair: require("task.repair"),
+    transfer: require("task.transfer"),
+    transfer_close: require("task.transfer_close"),
+    supply: require("task.supply"),
+    upgrade: require("task.upgrade")
+};
 module.exports.loop = function () {
-    //Setting up job settings
-    if(typeof Memory.jobs == 'undefined' || Memory.jobs == null){
-        Memory.jobs = {
-            melee: {
-                parts: [MOVE, ATTACK, TOUGH, CLAIM],
-                secondary_job: null
-            },
-            ranged: {
-                parts: [MOVE, RANGED_ATTACK, CLAIM],
-                secondary_job: null
-            },
-            harvest: {
-                parts: [MOVE, WORK, CARRY],
-                secondary_job: 'research'
-            },
-            engineer: {
-                parts: [MOVE, WORK, CARRY],
-                secondary_job: 'research'
-            },
-            medic: {
-                parts: [MOVE, HEAL],
-                secondary_job: null
-            },
-            research: {
-                parts: [MOVE, WORK, CARRY],
-                secondary_job: null
-            }
-        };
-    }
 
+    //console.log("-----------------------ROOMS-----------------------");
     //Looping trough rooms
-    for(let r in Game.rooms){
+    for (let r in Game.rooms) {
         //Runnig room's script
         let ro = room(r);
     }
+    //console.log("---------------------------------------------------");
+    //console.log("-----------------------CREEPS----------------------");
 
-    //Looping trough creeps
-    for(let c in Memory.creeps){
+    for (let c in Game.creeps) {
         let creep = Game.creeps[c];
-        //If the user wants to kill them all
-        if(Memory.killAll) {
-            creep.suicide();
-            delete Memory.creeps[c];
-        }else{
-            //If the creep is dead, releasing memory
-            if(!Game.creeps[c]) {
-                delete Memory.creeps[c];
-            }else{
-                //Deciding what to do (primary or current job)
-                var job = typeof creep.memory.currentJob == "undefined" || creep.memory.currentJob == null? creep.memory.mainJob:creep.memory.currentJob;
-                //If the job is correct, run the script for it
-                if(typeof jobs[job]!="undefined"){
-                    var cr = new jobs[job](creep);
-                    cr.run();
-                }
-            }
-        }
+        let instance = jobs[creep.memory.main_job] != null?jobs[creep.memory.main_job]:jobs.ai;
+        let cr = new instance(creep);
+        cr.run();
     }
-    Memory.killAll = false;
 
+    Memory.reloadTasks = false;
+   //console.log("---------------------------------------------------");
 };
