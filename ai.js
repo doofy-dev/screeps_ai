@@ -21,8 +21,11 @@ AI.prototype.move = function (reload = false) {
         // let cm=typeof nextMove != "undefined"?this.canMove(this.creep.pos,nextMove.direction):false;
         //  if (canMove) {
         //   var m=this.creep.moveByPath(this.memory.destination.path);
-        var m = typeof nextMove != "undefined" ? this.creep.move(nextMove.direction) : ERR_NO_PATH;
+        let direction = this.creep.pos.getDirectionTo(nextMove);
+        var m = typeof nextMove != "undefined" ? this.creep.move(direction) : ERR_NO_PATH;
         //console.log('move', m)
+        if(m==ERR_TIRED)
+            this.say("Tired");
         if (m == OK) {
             // let terrainAt=Game.map.getTerrainAt(nextMove.x, nextMove.y, this.creep.room.name);
             // if(terrainAt!=STRUCTURE_ROAD)
@@ -67,20 +70,19 @@ AI.prototype.setDestination = function (destination, reload = false) {
         prevDest =this.memory.destination.id;
 
     if ((prevDest != destination) || reload) {
-
-        if (prevDest != null && this.isSource(prevDest)) {
-            this.creep.room.memory.sources[prevDest].allocated--;
-        }
-        else {
-            if (this.isSource(destination))
-                this.creep.room.memory.sources[destination].allocated++;
-        }
         if (destination != null) {
-            let cPos = this.getRoomPos(this.creep, this.creep.room.name);
-            let dPos = this.getRoomPos(Game.getObjectById(destination), this.creep.room.name);
+            // let cPos = this.getRoomPos(this.creep, this.creep.room.name);
+            // let dPos = this.getRoomPos(Game.getObjectById(destination).pos, this.creep.room.name);
+            PathFinder.use(true);
+           var path = PathFinder.search(this.creep.pos,{pos:Game.getObjectById(destination).pos, range: 1},{
+               plainCost: 2,
+               swampCost: 10
+           });
+            // console.log(JSON.stringify(this.creep.pos),JSON.stringify(Game.getObjectById(destination).pos),JSON.stringify(path));
+            // console.log(JSON.stringify(path));
             this.setCreepMemory('destination', {
                 id: destination,
-                path: cPos.findPathTo(dPos),
+                path: path.path,
                 index: 0,
             })
         } else {

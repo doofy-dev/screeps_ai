@@ -2,16 +2,17 @@
  * Created by teeebor on 2016-07-20.
  */
 module.exports = {
-    bodyPartCost: {
-        move: 80,
-        work: 100,
-        carry: 50,
-        attack: 80,
-        ranged_attack: 150,
-        heal: 250,
-        claim: 600,
-        tough: 10
-    },
+    bodyPartCost: BODYPART_COST,
+// {
+//         move: 80,
+//         work: 100,
+//         carry: 50,
+//         attack: 80,
+//         ranged_attack: 150,
+//         heal: 250,
+//         claim: 600,
+//         tough: 10
+//     },
     jobs: {
         melee: {
             parts: [MOVE, ATTACK, TOUGH, CLAIM],
